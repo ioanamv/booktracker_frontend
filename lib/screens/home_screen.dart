@@ -25,8 +25,31 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Center(
-        child: Text("Welcome, $userEmail!", style: TextStyle(fontSize: 24)),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: BlocConsumer<AuthCubit, AuthState>(
+          listener: (context, state) {
+            if (state is AuthAuthenticated) {
+              Navigator.of(context).pushReplacementNamed('/home');
+            }
+            if (state is AuthError) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.message)));
+            }
+          },
+          builder: (context, state) {
+            if (state is AuthLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            return Center(
+              child: Text(
+                "Welcome, $userEmail!",
+                style: TextStyle(fontSize: 24),
+              ),
+            );
+          },
+        ),
       ),
     );
   }

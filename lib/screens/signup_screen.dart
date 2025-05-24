@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubit/auth_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -56,6 +56,12 @@ class _SignupScreenState extends State<SignupScreen> {
                 ElevatedButton(
                   onPressed: _signup,
                   child: const Text("Sign Up"),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pushNamed('/');
+                  },
+                  child: const Text("Already have an account? Log in"),
                 ),
               ],
             );
