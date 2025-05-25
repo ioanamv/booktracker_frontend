@@ -8,12 +8,16 @@ part 'auth_state.dart';
 class AuthCubit extends Cubit<AuthState> {
   late FirebaseAuth _auth;
 
-  final apiService = ApiService();
+  ApiService apiService;
 
-  AuthCubit() : super(AuthInitial()) {
+  AuthCubit(this.apiService) : super(AuthInitial()) {
     _auth = FirebaseAuth.instance;
+  }
+
+  Future<void> initialize() async {
     final user = _auth.currentUser;
     if (user != null) {
+      apiService.setAuthToken(await user.getIdToken());
       emit(AuthAuthenticated(user));
     }
   }
@@ -35,6 +39,7 @@ class AuthCubit extends Cubit<AuthState> {
           emit(AuthError('Backend server error: ${response.body}'));
           return;
         }
+        apiService.setAuthToken(await _auth.currentUser!.getIdToken());
         emit(AuthAuthenticated(_auth.currentUser));
       } catch (e) {
         await credential.user!.delete();
@@ -49,6 +54,7 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
+      apiService.setAuthToken(await _auth.currentUser!.getIdToken());
       emit(AuthAuthenticated(_auth.currentUser));
     } catch (e) {
       emit(AuthError(e.toString()));
@@ -59,6 +65,7 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
     try {
       await _auth.signOut();
+      apiService.setAuthToken(null);
       emit(AuthInitial());
     } catch (e) {
       emit(AuthError(e.toString()));

@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:booktracker/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubit/auth_cubit.dart';
@@ -5,8 +8,17 @@ import '../cubit/auth_cubit.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
+  void create(ApiService apiService) async {
+    await apiService.postRequest("/books", {
+      'title': "Title",
+      'author': "Author",
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final apiService = context.read<AuthCubit>().apiService;
+
     final userEmail =
         context.read<AuthCubit>().state is AuthAuthenticated
             ? (context.read<AuthCubit>().state as AuthAuthenticated).user!.email
@@ -43,9 +55,18 @@ class HomeScreen extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             }
             return Center(
-              child: Text(
-                "Welcome, $userEmail!",
-                style: TextStyle(fontSize: 24),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Welcome, $userEmail!", style: TextStyle(fontSize: 24)),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      create(apiService);
+                    },
+                    child: Text("Create book"),
+                  ),
+                ],
               ),
             );
           },
