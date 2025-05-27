@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:booktracker/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,8 +15,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final apiService = context.read<AuthCubit>().apiService;
-
     final userEmail =
         context.read<AuthCubit>().state is AuthAuthenticated
             ? (context.read<AuthCubit>().state as AuthAuthenticated).user!.email
@@ -62,7 +58,7 @@ class HomeScreen extends StatelessWidget {
                   SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
-                      create(apiService);
+                      Navigator.pushNamed(context, '/addBook');
                     },
                     child: Text("Create book"),
                   ),

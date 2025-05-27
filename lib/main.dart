@@ -6,6 +6,8 @@ import 'cubit/auth_cubit.dart';
 import 'screens/home_screen.dart';
 import 'screens/signup_screen.dart';
 import 'services/api_service.dart';
+import 'screens/add_book_screen.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,7 +16,16 @@ void main() async {
 
   final authCubit = AuthCubit(apiService);
   await authCubit.initialize();
-  runApp(BlocProvider.value(value: authCubit, child: const MyApp()));
+
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        Provider<ApiService>.value(value: apiService),
+        BlocProvider<AuthCubit>.value(value: authCubit),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -32,6 +43,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const LoginScreen(),
         '/signup': (context) => const SignupScreen(),
         '/home': (context) => const HomeScreen(),
+        '/addBook': (context) => const AddBookScreen(),
       },
     );
   }
