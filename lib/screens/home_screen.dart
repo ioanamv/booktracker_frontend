@@ -55,6 +55,43 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> _deleteBook(String bookId) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text("Are you sure you want to delete this bookd?"),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text("Cancel"),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text("Delete"),
+              ),
+            ],
+          ),
+    );
+
+    if (confirm == true) {
+      final response = await apiService.deleteRequest('/books/$bookId');
+
+      if (!mounted) return;
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Book deleted')));
+        _getBooks();
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Failed to delete book')));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -146,15 +183,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                             iconSize: 20,
                                             padding: EdgeInsets.zero,
                                             onPressed: () {
-                                              ScaffoldMessenger.of(
-                                                context,
-                                              ).showSnackBar(
-                                                const SnackBar(
-                                                  content: Text(
-                                                    "Delete pressed",
-                                                  ),
-                                                ),
-                                              );
+                                              final bookId =
+                                                  book['bookId'].toString();
+                                              _deleteBook(bookId);
                                             },
                                           ),
                                         ],
