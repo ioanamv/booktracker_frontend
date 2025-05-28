@@ -49,4 +49,19 @@ class ApiService {
       },
     );
   }
+
+  Future<http.Response> putRequest(
+    String endpoint,
+    Map<String, dynamic> body,
+  ) async {
+    final url = Uri.parse('$_baseUrl$endpoint');
+    return await _client.put(
+      url,
+      headers: {
+        if (_authToken != null) 'Authorization': 'Bearer $_authToken',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(body),
+    );
+  }
 }

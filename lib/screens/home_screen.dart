@@ -166,13 +166,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                             iconSize: 20,
                                             padding: EdgeInsets.zero,
                                             onPressed: () {
-                                              ScaffoldMessenger.of(
+                                              Navigator.pushNamed(
                                                 context,
-                                              ).showSnackBar(
-                                                const SnackBar(
-                                                  content: Text("Edit pressed"),
-                                                ),
-                                              );
+                                                '/editBook',
+                                                arguments: book,
+                                              ).then((_) => _getBooks());
                                             },
                                           ),
                                           IconButton(

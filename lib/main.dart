@@ -1,3 +1,4 @@
+import 'package:booktracker/screens/edit_book_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
         '/signup': (context) => const SignupScreen(),
         '/home': (context) => const HomeScreen(),
         '/addBook': (context) => const AddBookScreen(),
+        '/editBook': (context) => const EditBookScreen(),
       },
     );
   }
